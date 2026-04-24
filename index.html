@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Waktu & Tanggal</title>
+    <style>
+        /* Tambahkan box-sizing global agar padding tidak menambah ukuran lebar elemen */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #d1d5db;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--surface);
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 480px;
+        }
+
+        h2 {
+            margin-top: 0;
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 400px) {
+            .form-row {
+                flex-direction: column;
+            }
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0; /* Mencegah flex item membesar lebih dari kontainer */
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        input[type="date"], 
+        input[type="time"], 
+        input[type="number"] {
+            width: 100%; /* Memastikan input mengambil maksimal 100% dari kolomnya */
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+            color: var(--text-main);
+            background-color: #fff;
+        }
+
+        input[type="date"]:focus, 
+        input[type="time"]:focus, 
+        input[type="number"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        .toggle-container {
+            display: flex;
+            background-color: #e0e7ff;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .toggle-container input[type="radio"] {
+            display: none;
+        }
+
+        .toggle-container label {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            margin: 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .toggle-container input[type="radio"]:checked + label {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        /* Responsif untuk layar kecil agar grid menjadi 2 kolom */
+        @media (max-width: 400px) {
+            .grid-inputs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        button.btn-calc {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button.btn-calc:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        button.btn-calc:active {
+            transform: scale(0.98);
+        }
+
+        .result-container {
+            margin-top: 24px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            display: none; /* Sembunyikan sepenuhnya sebelum dihitung */
+        }
+
+        .result-container.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .result-date {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .result-time {
+            font-size: 1.125rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Kalkulator Waktu</h2>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="startDate">Tanggal Mulai</label>
+                <input type="date" id="startDate" required>
+            </div>
+            <div class="form-group">
+                <label for="startTime">Waktu Mulai</label>
+                <input type="time" id="startTime" required>
+            </div>
+        </div>
+
+        <div class="toggle-container">
+            <input type="radio" id="opAdd" name="operation" value="add" checked>
+            <label for="opAdd">Tambah (+)</label>
+            
+            <input type="radio" id="opSub" name="operation" value="sub">
+            <label for="opSub">Kurang (-)</label>
+        </div>
+
+        <div class="grid-inputs">
+            <div class="form-group">
+                <label for="years">Tahun</label>
+                <input type="number" id="years" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+                <label for="months">Bulan</label>
+                <input type="number" id="months" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+                <label for="days">Hari</label>
+                <input type="number" id="days" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+                <label for="hours">Jam</label>
+                <input type="number" id="hours" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+                <label for="minutes">Menit</label>
+                <input type="number" id="minutes" placeholder="0" min="0">
+            </div>
+        </div>
+
+        <button class="btn-calc" onclick="calculateTime()">Hitung Hasil</button>
+
+        <div class="result-container" id="resultContainer">
+            <div class="result-label">Hasil Perhitungan</div>
+            <div class="result-date" id="resDate">-</div>
+            <div class="result-time" id="resTime">-</div>
+        </div>
+    </div>
+
+    <script>
+        // Set default value ke waktu saat ini ketika halaman dimuat
+        window.onload = () => {
+            const now = new Date();
+            // Format YYYY-MM-DD menyesuaikan zona waktu lokal
+            const localDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+            document.getElementById('startDate').value = localDate;
+            
+            // Format HH:MM (Format 24 jam untuk input type="time" HTML5, browser yang konversi ke AM/PM di UI)
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('startTime').value = `${hours}:${minutes}`;
+        };
+
+        function calculateTime() {
+            const startDate = document.getElementById('startDate').value;
+            const startTime = document.getElementById('startTime').value;
+
+            if (!startDate || !startTime) {
+                alert('Silakan pilih tanggal dan waktu mulai terlebih dahulu!');
+                return;
+            }
+
+            // Ambil operasi (Tambah atau Kurang)
+            const operation = document.querySelector('input[name="operation"]:checked').value;
+            const sign = operation === 'add' ? 1 : -1;
+
+            // Ambil nilai input, set ke 0 jika kosong
+            const years = parseInt(document.getElementById('years').value) || 0;
+            const months = parseInt(document.getElementById('months').value) || 0;
+            const days = parseInt(document.getElementById('days').value) || 0;
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+
+            // Inisialisasi objek Date
+            let resultDate = new Date(`${startDate}T${startTime}`);
+
+            // Proses perhitungan matematika waktu
+            resultDate.setFullYear(resultDate.getFullYear() + (years * sign));
+            resultDate.setMonth(resultDate.getMonth() + (months * sign));
+            resultDate.setDate(resultDate.getDate() + (days * sign));
+            resultDate.setHours(resultDate.getHours() + (hours * sign));
+            resultDate.setMinutes(resultDate.getMinutes() + (minutes * sign));
+
+            // Format output Tanggal (Bahasa Indonesia)
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = resultDate.toLocaleDateString('id-ID', dateOptions);
+
+            // Format output Waktu (12-Jam AM/PM)
+            let resHours = resultDate.getHours();
+            let resMinutes = resultDate.getMinutes();
+            const ampm = resHours >= 12 ? 'PM' : 'AM';
+            
+            resHours = resHours % 12;
+            resHours = resHours ? resHours : 12; // Jam '0' dikonversi menjadi '12'
+            
+            const stringHours = resHours.toString().padStart(2, '0');
+            const stringMinutes = resMinutes.toString().padStart(2, '0');
+            const formattedTime = `${stringHours}:${stringMinutes} ${ampm}`;
+
+            // Tampilkan hasil ke layar
+            document.getElementById('resDate').innerText = formattedDate;
+            document.getElementById('resTime').innerText = formattedTime;
+            
+            // Trigger animasi kemunculan hasil
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.add('show');
+            
+            // Sedikit trik agar animasi fade in berjalan mulus setelah display block aktif
+            setTimeout(() => {
+                resultContainer.style.opacity = '1';
+                resultContainer.style.transform = 'translateY(0)';
+            }, 10);
+        }
+    </script>
+</body>
+</html>
