@@ -312,19 +312,43 @@
     </div>
 
     <script>
+        // Fungsi helper untuk mengatur Cookie
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+
+        // Fungsi helper untuk mengambil nilai Cookie
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for(let i=0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
         // Setup Dark Mode Toggle
         const themeToggleBtn = document.getElementById('themeToggle');
         const body = document.body;
 
-        // Cek preferensi user sebelumnya dari localStorage
-        if (localStorage.getItem('theme') === 'dark') {
+        // Cek preferensi user sebelumnya dari Cookie
+        if (getCookie('theme') === 'dark') {
             body.classList.add('dark');
         }
 
         themeToggleBtn.addEventListener('click', () => {
             body.classList.toggle('dark');
             const isDark = body.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            // Simpan preferensi tema ke cookie selama 365 hari
+            setCookie('theme', isDark ? 'dark' : 'light', 365);
         });
 
         // Set default value ke waktu saat ini ketika halaman dimuat
