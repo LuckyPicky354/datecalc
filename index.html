@@ -3,437 +3,492 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Waktu & Tanggal</title>
+    <title>Kalkulator Waktu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Tambahkan box-sizing global agar padding tidak menambah ukuran lebar elemen */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --primary: #10b981;
-            --primary-hover: #059669;
-            --bg: #f3f4f6;
+            --green: #16a34a;
+            --green-light: #dcfce7;
+            --green-dim: rgba(22,163,74,0.12);
+            --bg: #f6f7f9;
             --surface: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border: #d1d5db;
-            --radius: 12px;
-            --input-bg: #ffffff;
-            --toggle-bg: #d1fae5;
-            --result-bg: #f8fafc;
+            --surface-2: #f0f2f5;
+            --border: #e2e5ea;
+            --text: #111827;
+            --muted: #6b7280;
+            --radius: 14px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
         }
 
         body.dark {
-            --bg: #111827;
-            --surface: #1f2937;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-            --border: #374151;
-            --input-bg: #374151;
-            --toggle-bg: #064e3b;
-            --result-bg: #111827;
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface-2: #1c2128;
+            --border: #2d333b;
+            --text: #e6edf3;
+            --muted: #7d8590;
+            --green-light: rgba(22,163,74,0.15);
+            --green-dim: rgba(22,163,74,0.08);
+            --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.3);
             color-scheme: dark;
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            background-color: var(--surface);
-            padding: 32px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 480px;
-            position: relative;
-        }
-
-        .theme-toggle {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            background: none;
-            border: none;
-            font-size: 1.25rem;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s;
-            color: var(--text-main);
+            padding: 24px 16px;
+            transition: background 0.3s, color 0.3s;
         }
 
-        .theme-toggle:hover {
-            background-color: var(--bg);
+        /* --- Background subtle pattern --- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle at 20% 20%, rgba(22,163,74,0.04) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 80%, rgba(22,163,74,0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .theme-toggle #sunIcon { display: none; }
-        .theme-toggle #moonIcon { display: block; }
-        
-        body.dark .theme-toggle #sunIcon { display: block; }
-        body.dark .theme-toggle #moonIcon { display: none; }
-
-        h2 {
-            margin-top: 0;
-            text-align: center;
-            color: var(--primary);
-            font-size: 1.5rem;
-            margin-bottom: 24px;
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 460px;
+            padding: 32px 28px;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.4s ease both;
         }
 
-        .form-row {
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Header --- */
+        .header {
             display: flex;
-            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--green-dim);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--green);
+        }
+
+        .logo-icon svg { display: block; }
+
+        .header-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+
+        .header-sub {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 1px;
+            font-weight: 400;
+        }
+
+        /* --- Theme toggle --- */
+        .theme-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .theme-btn:hover { color: var(--text); border-color: var(--green); }
+        .theme-btn #sunIcon { display: none; }
+        .theme-btn #moonIcon { display: block; }
+        body.dark .theme-btn #sunIcon { display: block; }
+        body.dark .theme-btn #moonIcon { display: none; }
+
+        /* --- Section label --- */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        /* --- Inputs --- */
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
-        @media (max-width: 400px) {
-            .form-row {
-                flex-direction: column;
-            }
+        .field { display: flex; flex-direction: column; gap: 5px; }
+
+        .field label {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--muted);
         }
 
-        .form-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0; /* Mencegah flex item membesar lebih dari kontainer */
-        }
-
-        label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-main);
-            white-space: nowrap;
-        }
-
-        input[type="date"], 
-        input[type="time"], 
+        input[type="date"],
+        input[type="time"],
         input[type="number"] {
-            width: 100%; /* Memastikan input mengambil maksimal 100% dari kolomnya */
-            padding: 10px 14px;
+            width: 100%;
+            padding: 9px 12px;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.2s;
+            border-radius: 9px;
+            font-size: 0.875rem;
+            font-family: 'DM Mono', monospace;
+            font-weight: 500;
+            color: var(--text);
+            background: var(--surface-2);
             outline: none;
-            color: var(--text-main);
-            background-color: var(--input-bg);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            -webkit-appearance: none;
         }
 
-        input[type="date"]:focus, 
-        input[type="time"]:focus, 
-        input[type="number"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
+            background: var(--surface);
         }
 
-        .toggle-container {
+        /* --- Divider --- */
+        .divider {
             display: flex;
-            background-color: var(--toggle-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 24px;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
         }
 
-        .toggle-container input[type="radio"] {
-            display: none;
+        .divider-line { flex: 1; height: 1px; background: var(--border); }
+        .divider-label { font-size: 0.7rem; color: var(--muted); font-weight: 500; white-space: nowrap; }
+
+        /* --- Toggle operation --- */
+        .op-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 20px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 4px;
         }
 
-        .toggle-container label {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            margin: 0;
-            cursor: pointer;
+        .op-toggle input[type="radio"] { display: none; }
+
+        .op-toggle label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 7px;
+            font-size: 0.8rem;
             font-weight: 600;
-            color: var(--primary);
-            transition: background-color 0.3s, color 0.3s;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
         }
 
-        .toggle-container input[type="radio"]:checked + label {
-            background-color: var(--primary);
-            color: white;
+        .op-toggle input:checked + label {
+            background: var(--surface);
+            color: var(--green);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
         }
 
-        .grid-inputs {
+        .op-icon { font-size: 1rem; line-height: 1; }
+
+        /* --- Duration grid --- */
+        .duration-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
+            gap: 8px;
             margin-bottom: 24px;
         }
 
-        /* Responsif untuk layar kecil agar grid menjadi 2 kolom */
-        @media (max-width: 400px) {
-            .grid-inputs {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        button.btn-calc {
+        /* --- Calculate button --- */
+        .btn-calc {
             width: 100%;
-            padding: 14px;
-            background-color: var(--primary);
-            color: white;
+            padding: 12px;
+            background: var(--green);
+            color: #fff;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-
-        button.btn-calc:hover {
-            background-color: var(--primary-hover);
-        }
-        
-        button.btn-calc:active {
-            transform: scale(0.98);
-        }
-
-        .result-container {
-            margin-top: 24px;
-            padding: 20px;
-            background-color: var(--result-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            text-align: center;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            display: none; /* Sembunyikan sepenuhnya sebelum dihitung */
-        }
-
-        .result-container.show {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .result-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        .result-date {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-
-        .result-time {
-            font-size: 1.125rem;
-            color: var(--text-main);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
             font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            letter-spacing: 0.01em;
+        }
+
+        .btn-calc:hover { opacity: 0.88; }
+        .btn-calc:active { transform: scale(0.98); }
+
+        /* --- Result --- */
+        .result-box {
+            margin-top: 16px;
+            border: 1px solid var(--green-light);
+            background: var(--green-dim);
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: none;
+            animation: resultIn 0.35s ease both;
+        }
+
+        @keyframes resultIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box.show { display: block; }
+
+        .result-eyebrow {
+            font-size: 0.68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: var(--green);
+            margin-bottom: 6px;
+        }
+
+        .result-date-val {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .result-time-val {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--muted);
+        }
+
+        @media (max-width: 380px) {
+            .row { grid-template-columns: 1fr; }
+            .duration-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <button id="themeToggle" class="theme-toggle" aria-label="Ubah Tema" title="Ubah Tema">
-            <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="20" height="20" fill="currentColor"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576C388.8 576 451.3 548.8 497.3 504.6C504.6 497.6 506.7 486.7 502.6 477.5C498.5 468.3 488.9 462.6 478.8 463.4C473.9 463.8 469 464 464 464C362.4 464 280 381.6 280 280C280 207.9 321.5 145.4 382.1 115.2C391.2 110.7 396.4 100.9 395.2 90.8C394 80.7 386.6 72.5 376.7 70.3C358.4 66.2 339.4 64 320 64z"/></svg>
-            <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"/></svg>
+<div class="card">
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="logo-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </div>
+            <div>
+                <div class="header-title">Kalkulator Waktu</div>
+                <div class="header-sub">Tambah atau kurangi durasi dari tanggal</div>
+            </div>
+        </div>
+        <button class="theme-btn" id="themeToggle" aria-label="Toggle tema">
+            <svg id="moonIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg id="sunIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         </button>
+    </div>
 
-        <h2>Kalkulator Waktu</h2>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label for="startDate">Tanggal Mulai</label>
-                <input type="date" id="startDate" required>
-            </div>
-            <div class="form-group">
-                <label for="startTime">Waktu Mulai</label>
-                <input type="time" id="startTime" step="1" required>
-            </div>
+    <!-- Start date/time -->
+    <div class="section-label">Waktu Awal</div>
+    <div class="row">
+        <div class="field">
+            <label for="startDate">Tanggal</label>
+            <input type="date" id="startDate">
         </div>
-
-        <div class="toggle-container">
-            <input type="radio" id="opAdd" name="operation" value="add" checked>
-            <label for="opAdd">Tambah (+)</label>
-            
-            <input type="radio" id="opSub" name="operation" value="sub">
-            <label for="opSub">Kurang (-)</label>
-        </div>
-
-        <div class="grid-inputs">
-            <div class="form-group">
-                <label for="years">Tahun</label>
-                <input type="number" id="years" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label for="months">Bulan</label>
-                <input type="number" id="months" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label for="days">Hari</label>
-                <input type="number" id="days" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label for="hours">Jam</label>
-                <input type="number" id="hours" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label for="minutes">Menit</label>
-                <input type="number" id="minutes" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label for="seconds">Detik</label>
-                <input type="number" id="seconds" placeholder="0" min="0">
-            </div>
-        </div>
-
-        <button class="btn-calc" onclick="calculateTime()">Hitung Hasil</button>
-
-        <div class="result-container" id="resultContainer">
-            <div class="result-label">Hasil Perhitungan</div>
-            <div class="result-date" id="resDate">-</div>
-            <div class="result-time" id="resTime">-</div>
+        <div class="field">
+            <label for="startTime">Waktu</label>
+            <input type="time" id="startTime" step="1">
         </div>
     </div>
 
-    <script>
-        // Fungsi helper untuk mengatur Cookie
-        function setCookie(name, value, days) {
-            let expires = "";
-            if (days) {
-                let date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+    <!-- Operation toggle -->
+    <div class="section-label">Operasi</div>
+    <div class="op-toggle">
+        <input type="radio" id="opAdd" name="operation" value="add" checked>
+        <label for="opAdd"><span class="op-icon">＋</span> Tambah</label>
+
+        <input type="radio" id="opSub" name="operation" value="sub">
+        <label for="opSub"><span class="op-icon">－</span> Kurang</label>
+    </div>
+
+    <!-- Duration -->
+    <div class="section-label">Durasi</div>
+    <div class="duration-grid">
+        <div class="field">
+            <label for="years">Tahun</label>
+            <input type="number" id="years" placeholder="0" min="0">
+        </div>
+        <div class="field">
+            <label for="months">Bulan</label>
+            <input type="number" id="months" placeholder="0" min="0">
+        </div>
+        <div class="field">
+            <label for="days">Hari</label>
+            <input type="number" id="days" placeholder="0" min="0">
+        </div>
+        <div class="field">
+            <label for="hours">Jam</label>
+            <input type="number" id="hours" placeholder="0" min="0">
+        </div>
+        <div class="field">
+            <label for="minutes">Menit</label>
+            <input type="number" id="minutes" placeholder="0" min="0">
+        </div>
+        <div class="field">
+            <label for="seconds">Detik</label>
+            <input type="number" id="seconds" placeholder="0" min="0">
+        </div>
+    </div>
+
+    <!-- Button -->
+    <button class="btn-calc" onclick="calculateTime()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Hitung Hasil
+    </button>
+
+    <!-- Result -->
+    <div class="result-box" id="resultBox">
+        <div class="result-eyebrow">Hasil Perhitungan</div>
+        <div class="result-date-val" id="resDate">—</div>
+        <div class="result-time-val" id="resTime">—</div>
+    </div>
+
+</div>
+
+<script>
+    // Cookie helpers
+    function setCookie(name, value, days) {
+        let d = new Date();
+        d.setTime(d.getTime() + days * 86400000);
+        document.cookie = `${name}=${value||""}; expires=${d.toUTCString()}; path=/; SameSite=Lax`;
+    }
+    function getCookie(name) {
+        for (let c of document.cookie.split(';')) {
+            c = c.trim();
+            if (c.startsWith(name + '=')) return c.slice(name.length + 1);
+        }
+        return null;
+    }
+
+    // Theme
+    const body = document.body;
+    const themeBtn = document.getElementById('themeToggle');
+    if (getCookie('theme') === 'dark') body.classList.add('dark');
+    themeBtn.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        setCookie('theme', body.classList.contains('dark') ? 'dark' : 'light', 365);
+    });
+
+    // Default: now
+    window.onload = () => {
+        const now = new Date();
+        const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+            .toISOString().split('T')[0];
+        document.getElementById('startDate').value = localDate;
+        const hh = now.getHours().toString().padStart(2,'0');
+        const mm = now.getMinutes().toString().padStart(2,'0');
+        const ss = now.getSeconds().toString().padStart(2,'0');
+        document.getElementById('startTime').value = `${hh}:${mm}:${ss}`;
+    };
+
+    function calculateTime() {
+        const startDate = document.getElementById('startDate').value;
+        const startTime = document.getElementById('startTime').value;
+        if (!startDate || !startTime) {
+            alert('Pilih tanggal dan waktu mulai terlebih dahulu.');
+            return;
         }
 
-        // Fungsi helper untuk mengambil nilai Cookie
-        function getCookie(name) {
-            let nameEQ = name + "=";
-            let ca = document.cookie.split(';');
-            for(let i=0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
+        const op = document.querySelector('input[name="operation"]:checked').value;
+        const s = op === 'add' ? 1 : -1;
+        const Y = parseInt(document.getElementById('years').value) || 0;
+        const M = parseInt(document.getElementById('months').value) || 0;
+        const D = parseInt(document.getElementById('days').value) || 0;
+        const h = parseInt(document.getElementById('hours').value) || 0;
+        const m = parseInt(document.getElementById('minutes').value) || 0;
+        const sec = parseInt(document.getElementById('seconds').value) || 0;
 
-        // Setup Dark Mode Toggle
-        const themeToggleBtn = document.getElementById('themeToggle');
-        const body = document.body;
+        let t = startTime;
+        if (t.split(':').length === 2) t += ':00';
+        let d = new Date(`${startDate}T${t}`);
 
-        // Cek preferensi user sebelumnya dari Cookie
-        if (getCookie('theme') === 'dark') {
-            body.classList.add('dark');
-        }
+        d.setFullYear(d.getFullYear() + Y * s);
+        d.setMonth(d.getMonth() + M * s);
+        d.setDate(d.getDate() + D * s);
+        d.setHours(d.getHours() + h * s);
+        d.setMinutes(d.getMinutes() + m * s);
+        d.setSeconds(d.getSeconds() + sec * s);
 
-        themeToggleBtn.addEventListener('click', () => {
-            body.classList.toggle('dark');
-            const isDark = body.classList.contains('dark');
-            // Simpan preferensi tema ke cookie selama 365 hari
-            setCookie('theme', isDark ? 'dark' : 'light', 365);
+        const formattedDate = d.toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
 
-        // Set default value ke waktu saat ini ketika halaman dimuat
-        window.onload = () => {
-            const now = new Date();
-            // Format YYYY-MM-DD menyesuaikan zona waktu lokal
-            const localDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-            document.getElementById('startDate').value = localDate;
-            
-            // Format HH:MM:SS (Format 24 jam untuk input type="time" HTML5, browser yang konversi ke AM/PM di UI)
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            document.getElementById('startTime').value = `${hours}:${minutes}:${seconds}`;
-        };
+        let rh = d.getHours();
+        const ampm = rh >= 12 ? 'PM' : 'AM';
+        rh = rh % 12 || 12;
+        const formattedTime =
+            `${rh.toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')} ${ampm}`;
 
-        function calculateTime() {
-            const startDate = document.getElementById('startDate').value;
-            const startTime = document.getElementById('startTime').value;
+        document.getElementById('resDate').textContent = formattedDate;
+        document.getElementById('resTime').textContent = formattedTime;
 
-            if (!startDate || !startTime) {
-                alert('Silakan pilih tanggal dan waktu mulai terlebih dahulu!');
-                return;
-            }
-
-            // Ambil operasi (Tambah atau Kurang)
-            const operation = document.querySelector('input[name="operation"]:checked').value;
-            const sign = operation === 'add' ? 1 : -1;
-
-            // Ambil nilai input, set ke 0 jika kosong
-            const years = parseInt(document.getElementById('years').value) || 0;
-            const months = parseInt(document.getElementById('months').value) || 0;
-            const days = parseInt(document.getElementById('days').value) || 0;
-            const hours = parseInt(document.getElementById('hours').value) || 0;
-            const minutes = parseInt(document.getElementById('minutes').value) || 0;
-            const seconds = parseInt(document.getElementById('seconds').value) || 0;
-
-            // Inisialisasi objek Date
-            // Waktu dari input bisa dalam format HH:MM atau HH:MM:SS, kita pastikan parsing berjalan baik
-            let startTimeValue = startTime;
-            if (startTime.split(':').length === 2) {
-                startTimeValue += ':00'; // Menambah detik jika browser hanya mengembalikan jam dan menit
-            }
-            let resultDate = new Date(`${startDate}T${startTimeValue}`);
-
-            // Proses perhitungan matematika waktu
-            resultDate.setFullYear(resultDate.getFullYear() + (years * sign));
-            resultDate.setMonth(resultDate.getMonth() + (months * sign));
-            resultDate.setDate(resultDate.getDate() + (days * sign));
-            resultDate.setHours(resultDate.getHours() + (hours * sign));
-            resultDate.setMinutes(resultDate.getMinutes() + (minutes * sign));
-            resultDate.setSeconds(resultDate.getSeconds() + (seconds * sign));
-
-            // Format output Tanggal (Bahasa Indonesia)
-            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = resultDate.toLocaleDateString('id-ID', dateOptions);
-
-            // Format output Waktu (12-Jam AM/PM) dengan detik
-            let resHours = resultDate.getHours();
-            let resMinutes = resultDate.getMinutes();
-            let resSeconds = resultDate.getSeconds();
-            const ampm = resHours >= 12 ? 'PM' : 'AM';
-            
-            resHours = resHours % 12;
-            resHours = resHours ? resHours : 12; // Jam '0' dikonversi menjadi '12'
-            
-            const stringHours = resHours.toString().padStart(2, '0');
-            const stringMinutes = resMinutes.toString().padStart(2, '0');
-            const stringSeconds = resSeconds.toString().padStart(2, '0');
-            const formattedTime = `${stringHours}:${stringMinutes}:${stringSeconds} ${ampm}`;
-
-            // Tampilkan hasil ke layar
-            document.getElementById('resDate').innerText = formattedDate;
-            document.getElementById('resTime').innerText = formattedTime;
-            
-            // Trigger animasi kemunculan hasil
-            const resultContainer = document.getElementById('resultContainer');
-            resultContainer.classList.add('show');
-            
-            // Sedikit trik agar animasi fade in berjalan mulus setelah display block aktif
-            setTimeout(() => {
-                resultContainer.style.opacity = '1';
-                resultContainer.style.transform = 'translateY(0)';
-            }, 10);
-        }
-    </script>
+        const box = document.getElementById('resultBox');
+        box.classList.remove('show');
+        void box.offsetWidth; // reflow for animation replay
+        box.classList.add('show');
+    }
+</script>
 </body>
 </html>
