@@ -19,7 +19,6 @@
             --border: #e2e5ea;
             --text: #111827;
             --muted: #6b7280;
-            --radius: 14px;
             --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
         }
 
@@ -48,13 +47,13 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* --- Background subtle pattern --- */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background-image: radial-gradient(circle at 20% 20%, rgba(22,163,74,0.04) 0%, transparent 50%),
-                              radial-gradient(circle at 80% 80%, rgba(22,163,74,0.04) 0%, transparent 50%);
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(22,163,74,0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(22,163,74,0.04) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
@@ -66,7 +65,7 @@
             box-shadow: var(--shadow);
             width: 100%;
             max-width: 460px;
-            padding: 32px 28px;
+            padding: 28px 28px 32px;
             position: relative;
             z-index: 1;
             animation: fadeUp 0.4s ease both;
@@ -77,94 +76,92 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Header --- */
+        /* Header */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 28px;
+            margin-bottom: 22px;
         }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .header-left { display: flex; align-items: center; gap: 10px; }
         .logo-icon {
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             background: var(--green-dim);
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--green);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--green); flex-shrink: 0;
         }
+        .header-title { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+        .header-sub   { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
 
-        .logo-icon svg { display: block; }
-
-        .header-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text);
-            letter-spacing: -0.01em;
-        }
-
-        .header-sub {
-            font-size: 0.72rem;
-            color: var(--muted);
-            margin-top: 1px;
-            font-weight: 400;
-        }
-
-        /* --- Theme toggle --- */
         .theme-btn {
-            width: 34px;
-            height: 34px;
+            width: 34px; height: 34px;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--surface-2);
             color: var(--muted);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; flex-shrink: 0;
         }
-
         .theme-btn:hover { color: var(--text); border-color: var(--green); }
-        .theme-btn #sunIcon { display: none; }
+        .theme-btn #sunIcon  { display: none; }
         .theme-btn #moonIcon { display: block; }
-        body.dark .theme-btn #sunIcon { display: block; }
+        body.dark .theme-btn #sunIcon  { display: block; }
         body.dark .theme-btn #moonIcon { display: none; }
 
-        /* --- Section label --- */
-        .section-label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+        /* Tab nav */
+        .tab-nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+        .tab-btn {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 9px 10px;
+            border-radius: 8px; border: 1px solid transparent;
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem; font-weight: 600;
             color: var(--muted);
-            margin-bottom: 10px;
+            cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .tab-btn.active {
+            background: var(--surface);
+            color: var(--green);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border-color: var(--border);
         }
 
-        /* --- Inputs --- */
+        /* Panels */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: panelIn 0.25s ease both; }
+        @keyframes panelIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section label */
+        .section-label {
+            font-size: 0.7rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--muted); margin-bottom: 10px;
+        }
+
+        /* Inputs */
         .row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 20px;
         }
-
         .field { display: flex; flex-direction: column; gap: 5px; }
-
-        .field label {
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: var(--muted);
-        }
+        .field label { font-size: 0.72rem; font-weight: 500; color: var(--muted); }
 
         input[type="date"],
         input[type="time"],
@@ -182,94 +179,69 @@
             transition: border-color 0.2s, box-shadow 0.2s;
             -webkit-appearance: none;
         }
-
         input:focus {
             border-color: var(--green);
             box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
             background: var(--surface);
         }
 
-        /* --- Divider --- */
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .divider-line { flex: 1; height: 1px; background: var(--border); }
-        .divider-label { font-size: 0.7rem; color: var(--muted); font-weight: 500; white-space: nowrap; }
-
-        /* --- Toggle operation --- */
+        /* Op toggle */
         .op-toggle {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-bottom: 20px;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 6px; margin-bottom: 20px;
             background: var(--surface-2);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 4px;
+            border-radius: 10px; padding: 4px;
         }
-
         .op-toggle input[type="radio"] { display: none; }
-
         .op-toggle label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 8px 12px;
-            border-radius: 7px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--muted);
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 8px 12px; border-radius: 7px; border: 1px solid transparent;
+            font-size: 0.8rem; font-weight: 600;
+            color: var(--muted); cursor: pointer; transition: all 0.2s; user-select: none;
         }
-
         .op-toggle input:checked + label {
-            background: var(--surface);
-            color: var(--green);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-            border: 1px solid var(--border);
+            background: var(--surface); color: var(--green);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-color: var(--border);
         }
-
         .op-icon { font-size: 1rem; line-height: 1; }
 
-        /* --- Duration grid --- */
+        /* Duration grid */
         .duration-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 24px;
+            display: grid; grid-template-columns: repeat(3,1fr);
+            gap: 8px; margin-bottom: 24px;
         }
 
-        /* --- Calculate button --- */
+        /* Separator for diff tab */
+        .time-separator {
+            display: flex; align-items: center; gap: 10px;
+            margin: 4px 0 20px;
+        }
+        .time-separator-line { flex: 1; height: 1px; background: var(--border); }
+        .time-separator-badge {
+            font-size: 0.68rem; font-weight: 700;
+            color: var(--green);
+            background: var(--green-dim);
+            border: 1px solid var(--green-light);
+            border-radius: 20px;
+            padding: 3px 10px;
+            letter-spacing: 0.05em; text-transform: uppercase;
+        }
+
+        /* Button */
         .btn-calc {
-            width: 100%;
-            padding: 12px;
-            background: var(--green);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
+            width: 100%; padding: 12px;
+            background: var(--green); color: #fff;
+            border: none; border-radius: 10px;
             font-family: 'DM Sans', sans-serif;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            letter-spacing: 0.01em;
+            font-size: 0.875rem; font-weight: 600;
+            cursor: pointer; transition: opacity 0.2s, transform 0.1s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
-
-        .btn-calc:hover { opacity: 0.88; }
+        .btn-calc:hover  { opacity: 0.88; }
         .btn-calc:active { transform: scale(0.98); }
 
-        /* --- Result --- */
+        /* Result box */
         .result-box {
             margin-top: 16px;
             border: 1px solid var(--green-light);
@@ -277,42 +249,53 @@
             border-radius: 12px;
             padding: 18px 20px;
             display: none;
-            animation: resultIn 0.35s ease both;
         }
-
+        .result-box.show { display: block; animation: resultIn 0.35s ease both; }
         @keyframes resultIn {
             from { opacity: 0; transform: translateY(8px); }
             to   { opacity: 1; transform: translateY(0); }
         }
-
-        .result-box.show { display: block; }
-
         .result-eyebrow {
-            font-size: 0.68rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.09em;
-            color: var(--green);
-            margin-bottom: 6px;
+            font-size: 0.68rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.09em;
+            color: var(--green); margin-bottom: 8px;
         }
+        .result-date-val { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+        .result-time-val { font-family: 'DM Mono', monospace; font-size: 0.9rem; font-weight: 500; color: var(--muted); }
 
-        .result-date-val {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 2px;
+        /* Diff result */
+        .diff-grid {
+            display: grid; grid-template-columns: repeat(3,1fr);
+            gap: 8px; margin-bottom: 12px;
         }
-
-        .result-time-val {
+        .diff-cell {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 9px; padding: 10px 8px; text-align: center;
+        }
+        body.dark .diff-cell { background: var(--surface-2); }
+        .diff-cell-val {
             font-family: 'DM Mono', monospace;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--muted);
+            font-size: 1.15rem; font-weight: 500;
+            color: var(--text); line-height: 1; margin-bottom: 3px;
         }
+        .diff-cell-unit {
+            font-size: 0.65rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+        }
+        .diff-total {
+            font-size: 0.8rem;
+            color: var(--muted);
+            padding-top: 10px;
+            border-top: 1px solid rgba(22,163,74,0.18);
+            display: flex; flex-direction: column; gap: 3px;
+        }
+        .diff-total span { color: var(--text); font-weight: 500; font-family: 'DM Mono', monospace; }
 
         @media (max-width: 380px) {
             .row { grid-template-columns: 1fr; }
-            .duration-grid { grid-template-columns: repeat(2, 1fr); }
+            .duration-grid { grid-template-columns: repeat(2,1fr); }
+            .diff-grid { grid-template-columns: repeat(2,1fr); }
         }
     </style>
 </head>
@@ -331,88 +314,138 @@
             </div>
             <div>
                 <div class="header-title">Kalkulator Waktu</div>
-                <div class="header-sub">Tambah atau kurangi durasi dari tanggal</div>
+                <div class="header-sub" id="headerSub">Tambah atau kurangi durasi dari tanggal</div>
             </div>
         </div>
         <button class="theme-btn" id="themeToggle" aria-label="Toggle tema">
             <svg id="moonIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            <svg id="sunIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg id="sunIcon"  width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         </button>
     </div>
 
-    <!-- Start date/time -->
-    <div class="section-label">Waktu Awal</div>
-    <div class="row">
-        <div class="field">
-            <label for="startDate">Tanggal</label>
-            <input type="date" id="startDate">
-        </div>
-        <div class="field">
-            <label for="startTime">Waktu</label>
-            <input type="time" id="startTime" step="1">
-        </div>
+    <!-- Tab nav -->
+    <div class="tab-nav">
+        <button class="tab-btn active" id="tabCalc" onclick="switchTab('calc')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="3"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="11" y2="17"/></svg>
+            Kalkulator
+        </button>
+        <button class="tab-btn" id="tabDiff" onclick="switchTab('diff')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            Selisih Waktu
+        </button>
     </div>
 
-    <!-- Operation toggle -->
-    <div class="section-label">Operasi</div>
-    <div class="op-toggle">
-        <input type="radio" id="opAdd" name="operation" value="add" checked>
-        <label for="opAdd"><span class="op-icon">＋</span> Tambah</label>
+    <!-- TAB 1: Kalkulator -->
+    <div class="tab-panel active" id="panelCalc">
 
-        <input type="radio" id="opSub" name="operation" value="sub">
-        <label for="opSub"><span class="op-icon">－</span> Kurang</label>
+        <div class="section-label">Waktu Awal</div>
+        <div class="row">
+            <div class="field">
+                <label for="startDate">Tanggal</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="field">
+                <label for="startTime">Waktu</label>
+                <input type="time" id="startTime" step="1">
+            </div>
+        </div>
+
+        <div class="section-label">Operasi</div>
+        <div class="op-toggle">
+            <input type="radio" id="opAdd" name="operation" value="add" checked>
+            <label for="opAdd"><span class="op-icon">＋</span> Tambah</label>
+            <input type="radio" id="opSub" name="operation" value="sub">
+            <label for="opSub"><span class="op-icon">－</span> Kurang</label>
+        </div>
+
+        <div class="section-label">Durasi</div>
+        <div class="duration-grid">
+            <div class="field"><label for="years">Tahun</label><input type="number" id="years" placeholder="0" min="0"></div>
+            <div class="field"><label for="months">Bulan</label><input type="number" id="months" placeholder="0" min="0"></div>
+            <div class="field"><label for="days">Hari</label><input type="number" id="days" placeholder="0" min="0"></div>
+            <div class="field"><label for="hours">Jam</label><input type="number" id="hours" placeholder="0" min="0"></div>
+            <div class="field"><label for="minutes">Menit</label><input type="number" id="minutes" placeholder="0" min="0"></div>
+            <div class="field"><label for="seconds">Detik</label><input type="number" id="seconds" placeholder="0" min="0"></div>
+        </div>
+
+        <button class="btn-calc" onclick="calculateTime()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Hitung Hasil
+        </button>
+
+        <div class="result-box" id="resultBox">
+            <div class="result-eyebrow">Hasil Perhitungan</div>
+            <div class="result-date-val" id="resDate">—</div>
+            <div class="result-time-val" id="resTime">—</div>
+        </div>
+
     </div>
 
-    <!-- Duration -->
-    <div class="section-label">Durasi</div>
-    <div class="duration-grid">
-        <div class="field">
-            <label for="years">Tahun</label>
-            <input type="number" id="years" placeholder="0" min="0">
-        </div>
-        <div class="field">
-            <label for="months">Bulan</label>
-            <input type="number" id="months" placeholder="0" min="0">
-        </div>
-        <div class="field">
-            <label for="days">Hari</label>
-            <input type="number" id="days" placeholder="0" min="0">
-        </div>
-        <div class="field">
-            <label for="hours">Jam</label>
-            <input type="number" id="hours" placeholder="0" min="0">
-        </div>
-        <div class="field">
-            <label for="minutes">Menit</label>
-            <input type="number" id="minutes" placeholder="0" min="0">
-        </div>
-        <div class="field">
-            <label for="seconds">Detik</label>
-            <input type="number" id="seconds" placeholder="0" min="0">
-        </div>
-    </div>
+    <!-- TAB 2: Selisih Waktu -->
+    <div class="tab-panel" id="panelDiff">
 
-    <!-- Button -->
-    <button class="btn-calc" onclick="calculateTime()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Hitung Hasil
-    </button>
+        <div class="section-label">Waktu Pertama</div>
+        <div class="row" style="margin-bottom:0">
+            <div class="field">
+                <label for="diffDate1">Tanggal</label>
+                <input type="date" id="diffDate1">
+            </div>
+            <div class="field">
+                <label for="diffTime1">Waktu</label>
+                <input type="time" id="diffTime1" step="1">
+            </div>
+        </div>
 
-    <!-- Result -->
-    <div class="result-box" id="resultBox">
-        <div class="result-eyebrow">Hasil Perhitungan</div>
-        <div class="result-date-val" id="resDate">—</div>
-        <div class="result-time-val" id="resTime">—</div>
+        <div class="time-separator">
+            <div class="time-separator-line"></div>
+            <div class="time-separator-badge">ke</div>
+            <div class="time-separator-line"></div>
+        </div>
+
+        <div class="section-label">Waktu Kedua</div>
+        <div class="row">
+            <div class="field">
+                <label for="diffDate2">Tanggal</label>
+                <input type="date" id="diffDate2">
+            </div>
+            <div class="field">
+                <label for="diffTime2">Waktu</label>
+                <input type="time" id="diffTime2" step="1">
+            </div>
+        </div>
+
+        <button class="btn-calc" onclick="calculateDiff()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            Hitung Selisih
+        </button>
+
+        <div class="result-box" id="diffResultBox">
+            <div class="result-eyebrow">Selisih Waktu</div>
+            <div class="diff-grid">
+                <div class="diff-cell"><div class="diff-cell-val" id="dYears">0</div><div class="diff-cell-unit">Tahun</div></div>
+                <div class="diff-cell"><div class="diff-cell-val" id="dMonths">0</div><div class="diff-cell-unit">Bulan</div></div>
+                <div class="diff-cell"><div class="diff-cell-val" id="dDays">0</div><div class="diff-cell-unit">Hari</div></div>
+                <div class="diff-cell"><div class="diff-cell-val" id="dHours">0</div><div class="diff-cell-unit">Jam</div></div>
+                <div class="diff-cell"><div class="diff-cell-val" id="dMinutes">0</div><div class="diff-cell-unit">Menit</div></div>
+                <div class="diff-cell"><div class="diff-cell-val" id="dSeconds">0</div><div class="diff-cell-unit">Detik</div></div>
+            </div>
+            <div class="diff-total">
+                <div>Total hari &nbsp;&nbsp;: <span id="dTotalDays">—</span></div>
+                <div>Total jam &nbsp;&nbsp;: <span id="dTotalHours">—</span></div>
+                <div>Total menit: <span id="dTotalMinutes">—</span></div>
+            </div>
+        </div>
+
     </div>
 
 </div>
 
 <script>
-    // Cookie helpers
-    function setCookie(name, value, days) {
-        let d = new Date();
+    /* Cookie helpers */
+    function setCookie(name, val, days) {
+        const d = new Date();
         d.setTime(d.getTime() + days * 86400000);
-        document.cookie = `${name}=${value||""}; expires=${d.toUTCString()}; path=/; SameSite=Lax`;
+        document.cookie = `${name}=${val||""}; expires=${d.toUTCString()}; path=/; SameSite=Lax`;
     }
     function getCookie(name) {
         for (let c of document.cookie.split(';')) {
@@ -422,72 +455,140 @@
         return null;
     }
 
-    // Theme
+    /* Theme */
     const body = document.body;
-    const themeBtn = document.getElementById('themeToggle');
     if (getCookie('theme') === 'dark') body.classList.add('dark');
-    themeBtn.addEventListener('click', () => {
+    document.getElementById('themeToggle').addEventListener('click', () => {
         body.classList.toggle('dark');
         setCookie('theme', body.classList.contains('dark') ? 'dark' : 'light', 365);
     });
 
-    // Default: now
+    /* Tab switch */
+    const headerSubs = {
+        calc: 'Tambah atau kurangi durasi dari tanggal',
+        diff: 'Hitung selisih antara dua waktu'
+    };
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        const id = tab.charAt(0).toUpperCase() + tab.slice(1);
+        document.getElementById('tab' + id).classList.add('active');
+        document.getElementById('panel' + id).classList.add('active');
+        document.getElementById('headerSub').textContent = headerSubs[tab];
+    }
+
+    /* Defaults */
     window.onload = () => {
         const now = new Date();
         const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
             .toISOString().split('T')[0];
-        document.getElementById('startDate').value = localDate;
-        const hh = now.getHours().toString().padStart(2,'0');
-        const mm = now.getMinutes().toString().padStart(2,'0');
-        const ss = now.getSeconds().toString().padStart(2,'0');
-        document.getElementById('startTime').value = `${hh}:${mm}:${ss}`;
+        const timeStr = [now.getHours(), now.getMinutes(), now.getSeconds()]
+            .map(n => n.toString().padStart(2,'0')).join(':');
+
+        document.getElementById('startDate').value  = localDate;
+        document.getElementById('startTime').value  = timeStr;
+        document.getElementById('diffDate1').value  = localDate;
+        document.getElementById('diffTime1').value  = timeStr;
+        document.getElementById('diffDate2').value  = localDate;
+        document.getElementById('diffTime2').value  = timeStr;
     };
 
+    /* Parse datetime input to Date */
+    function parseInput(dateVal, timeVal) {
+        let t = timeVal;
+        if (t.split(':').length === 2) t += ':00';
+        return new Date(`${dateVal}T${t}`);
+    }
+
+    /* Format 12h */
+    function fmt12(d) {
+        let h = d.getHours();
+        const ap = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h.toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')} ${ap}`;
+    }
+
+    /* Show result with replay animation */
+    function showResult(id) {
+        const box = document.getElementById(id);
+        box.classList.remove('show');
+        void box.offsetWidth;
+        box.classList.add('show');
+    }
+
+    /* TAB 1: Kalkulator */
     function calculateTime() {
         const startDate = document.getElementById('startDate').value;
         const startTime = document.getElementById('startTime').value;
-        if (!startDate || !startTime) {
-            alert('Pilih tanggal dan waktu mulai terlebih dahulu.');
-            return;
-        }
+        if (!startDate || !startTime) { alert('Pilih tanggal dan waktu mulai terlebih dahulu.'); return; }
 
-        const op = document.querySelector('input[name="operation"]:checked').value;
-        const s = op === 'add' ? 1 : -1;
-        const Y = parseInt(document.getElementById('years').value) || 0;
-        const M = parseInt(document.getElementById('months').value) || 0;
-        const D = parseInt(document.getElementById('days').value) || 0;
-        const h = parseInt(document.getElementById('hours').value) || 0;
-        const m = parseInt(document.getElementById('minutes').value) || 0;
+        const sign = document.querySelector('input[name="operation"]:checked').value === 'add' ? 1 : -1;
+        const Y   = parseInt(document.getElementById('years').value)   || 0;
+        const M   = parseInt(document.getElementById('months').value)  || 0;
+        const D   = parseInt(document.getElementById('days').value)    || 0;
+        const h   = parseInt(document.getElementById('hours').value)   || 0;
+        const m   = parseInt(document.getElementById('minutes').value) || 0;
         const sec = parseInt(document.getElementById('seconds').value) || 0;
 
-        let t = startTime;
-        if (t.split(':').length === 2) t += ':00';
-        let d = new Date(`${startDate}T${t}`);
+        let d = parseInput(startDate, startTime);
+        d.setFullYear(d.getFullYear() + Y * sign);
+        d.setMonth(d.getMonth() + M * sign);
+        d.setDate(d.getDate() + D * sign);
+        d.setHours(d.getHours() + h * sign);
+        d.setMinutes(d.getMinutes() + m * sign);
+        d.setSeconds(d.getSeconds() + sec * sign);
 
-        d.setFullYear(d.getFullYear() + Y * s);
-        d.setMonth(d.getMonth() + M * s);
-        d.setDate(d.getDate() + D * s);
-        d.setHours(d.getHours() + h * s);
-        d.setMinutes(d.getMinutes() + m * s);
-        d.setSeconds(d.getSeconds() + sec * s);
-
-        const formattedDate = d.toLocaleDateString('id-ID', {
+        document.getElementById('resDate').textContent = d.toLocaleDateString('id-ID', {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
+        document.getElementById('resTime').textContent = fmt12(d);
+        showResult('resultBox');
+    }
 
-        let rh = d.getHours();
-        const ampm = rh >= 12 ? 'PM' : 'AM';
-        rh = rh % 12 || 12;
-        const formattedTime =
-            `${rh.toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')} ${ampm}`;
+    /* TAB 2: Selisih Waktu */
+    function calculateDiff() {
+        const d1v = document.getElementById('diffDate1').value;
+        const t1v = document.getElementById('diffTime1').value;
+        const d2v = document.getElementById('diffDate2').value;
+        const t2v = document.getElementById('diffTime2').value;
+        if (!d1v || !t1v || !d2v || !t2v) { alert('Isi semua tanggal dan waktu terlebih dahulu.'); return; }
 
-        document.getElementById('resDate').textContent = formattedDate;
-        document.getElementById('resTime').textContent = formattedTime;
+        let a = parseInput(d1v, t1v);
+        let b = parseInput(d2v, t2v);
+        if (b < a) [a, b] = [b, a]; // always positive
 
-        const box = document.getElementById('resultBox');
-        box.classList.remove('show');
-        void box.offsetWidth; // reflow for animation replay
-        box.classList.add('show');
+        const totalMs      = b - a;
+        const totalDays    = Math.floor(totalMs / 86400000);
+        const totalHours   = Math.floor(totalMs / 3600000);
+        const totalMinutes = Math.floor(totalMs / 60000);
+
+        // Compute human-readable breakdown
+        let tempA  = new Date(a);
+        let years  = b.getFullYear() - tempA.getFullYear();
+        let months = b.getMonth()    - tempA.getMonth();
+        if (months < 0) { years--; months += 12; }
+
+        tempA.setFullYear(tempA.getFullYear() + years);
+        tempA.setMonth(tempA.getMonth() + months);
+
+        let remMs   = b - tempA;
+        let days    = Math.floor(remMs / 86400000); remMs -= days    * 86400000;
+        let hours   = Math.floor(remMs / 3600000);  remMs -= hours   * 3600000;
+        let minutes = Math.floor(remMs / 60000);    remMs -= minutes * 60000;
+        let seconds = Math.floor(remMs / 1000);
+
+        document.getElementById('dYears').textContent   = years;
+        document.getElementById('dMonths').textContent  = months;
+        document.getElementById('dDays').textContent    = days;
+        document.getElementById('dHours').textContent   = hours;
+        document.getElementById('dMinutes').textContent = minutes;
+        document.getElementById('dSeconds').textContent = seconds;
+
+        document.getElementById('dTotalDays').textContent    = totalDays.toLocaleString('id-ID')    + ' hari';
+        document.getElementById('dTotalHours').textContent   = totalHours.toLocaleString('id-ID')   + ' jam';
+        document.getElementById('dTotalMinutes').textContent = totalMinutes.toLocaleString('id-ID') + ' menit';
+
+        showResult('diffResultBox');
     }
 </script>
 </body>
